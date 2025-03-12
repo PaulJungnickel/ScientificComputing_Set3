@@ -1,0 +1,33 @@
+[build-system]
+requires = ["flit_core >=3.11,<4"]
+build-backend = "flit_core.buildapi"
+
+[project]
+name = "src"
+version = "0.1"
+description = "A collection of classes to complete Assignment Set 3 for Scientific Computing"
+authors = [
+    { name="Victoria Peterson" },
+    { name="Karolina Chlopicka" },
+    { name="Paul Jungnickel" }
+]
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+dependencies = [
+    "matplotlib",
+    "numpy",
+    "scipy",
+    "numba",
+    "taichi",
+]
+
+[project.urls]
+Home = "https://github.com/karolina-chl/ScientificComputing_Set2"
+
+[tool.pytest.ini_options]
+pythonpath = [
+  "."
+]
+
+[project.scripts]
