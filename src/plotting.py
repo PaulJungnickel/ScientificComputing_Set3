@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import scipy
 import scipy.sparse as sp
+import scipy.sparse
 import scipy.sparse.linalg as spla
 import time
 
@@ -50,8 +51,6 @@ def plot_eigenfrequencies_boxplot(N, L_range, in_shape, shape_str):
     plt.xticks(rotation=90)
     plt.show()
 
-
-
 def plot_eigenmodes(eigenvectors, eigenvalues, shape_mask, N):
     sorted_indices = np.argsort(eigenvalues)[::-1]
     sorted_eigenvalues = eigenvalues[sorted_indices]
@@ -68,28 +67,25 @@ def plot_eigenmodes(eigenvectors, eigenvalues, shape_mask, N):
         plt.show()
 
 def influence_of_L(N, L_array, shape_func = generate_circle_grid, shape_str = "circle"):
-    max_eigenfreq_array = []
-    min_eigenfreq_array = []
-    eigenfreq_boxplot = []
+    
+    plt.figure(figsize=(6,3))
+    for shape_func, shape_str in zip(shape_func, shape_str):
+        median_eigenfreq_array = []
+        for L in L_array:
+            laplacian_shape, in_shape, x, y = create_laplacian_shape(N, L, shape_str, shape_func)
+            eigenvalues, _ = eigenvalues_and_eigenvectors(laplacian_shape, 'eig')
+            eigenvalues = eigenvalues.astype(np.float64)
+            eigenfreq = np.sqrt(-np.real(eigenvalues))
+            median_eigenfreq = np.min(eigenfreq)
+            median_eigenfreq_array.append(median_eigenfreq)
+        #print(eigenfreq)
+        
+        plt.plot(L_array, median_eigenfreq_array, marker = "o", label = shape_str)
 
-    for L in L_array:
-        laplacian_shape, in_shape, x, y = create_laplacian_shape(N, L, shape_str, shape_func)
-        eigenvalues, _ = scipy.linalg.eig(laplacian_shape)
-        eigenfreq = np.sqrt(-np.real(eigenvalues))
-        max_eigenfreq, min_eigenfreq = np.max(eigenfreq), np.min(eigenfreq)
-        max_eigenfreq_array.append(max_eigenfreq)
-        min_eigenfreq_array.append(min_eigenfreq)
-        eigenfreq_boxplot.append(eigenfreq)
-
-    #lineplot
-    plt.figure(figsize=(10, 10))
-    plt.plot(L_array, min_eigenfreq_array, marker = "o", label = "Minimum eigenvalue frequency", color = "blue")
-    plt.plot(L_array, max_eigenfreq_array, marker = "s", label = "Maximum eigenvalue frequency", color = "red")
     plt.legend()
     plt.xlabel("L values")
     plt.ylabel("Eigenfrequency")
     plt.grid()
-    #plt.savefig("results/eigenfrequncies for different L values")
     plt.show()
 
 def time_comparison_sparse(N_array, L, shape_func = generate_circle_grid, shape_str = "circle"):
