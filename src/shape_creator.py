@@ -1,6 +1,19 @@
 import numpy as np
 
 def generate_circle_grid(N, L):
+    """
+    Creates a circle grid, with the radius equal to L/2. 
+
+    Parameters: 
+        N (int) : Number of discretization steps.  
+        L (int) : Diameter of the circle. 
+
+    Returns:
+        - x (ndarray): X-coordinates of the grid.
+        - y (ndarray): Y-coordinates of the grid.
+        - in_square (ndarray): Boolean mask indicating points within the circle.
+        - h (float): Grid spacing.
+    """
     R = L / 2
     h = L / N
     y, x = np.meshgrid(np.linspace(-R, R, N), np.linspace(-R, R, N))
@@ -10,6 +23,19 @@ def generate_circle_grid(N, L):
 
 
 def generate_square_grid(N, L):
+    """
+    Creates a square grid, with the side of the square equal to L. 
+
+    Parameters: 
+        N (int) : Number of discretization steps.  
+        L (int) : Length of the side of the square. 
+
+    Returns:
+        - x (ndarray): X-coordinates of the grid.
+        - y (ndarray): Y-coordinates of the grid.
+        - in_square (ndarray): Boolean mask indicating points within the square.
+        - h (float): Grid spacing.
+    """
     h = L / N
     y, x = np.meshgrid(np.linspace(0, L, N), np.linspace(0, L, N))
     in_square = np.ones((N, N), dtype=bool)
@@ -22,6 +48,19 @@ def generate_square_grid(N, L):
 
 
 def generate_rectangle_grid(N, L):
+    """
+    Creates a rectangle grid, with the sides equal to L and 2L. 
+
+    Parameters: 
+        N (int) : Number of discretization steps.  
+        L (int) : Length of the side of the shorter side of the rectangle. 
+
+    Returns:
+        - x (ndarray): X-coordinates of the grid.
+        - y (ndarray): Y-coordinates of the grid.
+        - in_square (ndarray): Boolean mask indicating points within the rectangle.
+        - h (float): Grid spacing.
+    """
     h = L / N  
     y, x = np.meshgrid(np.linspace(0, L, N), np.linspace(0, L, N))
 

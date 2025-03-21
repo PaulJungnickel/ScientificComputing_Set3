@@ -6,6 +6,19 @@ import matplotlib.pyplot as plt
 from plotting import *
 
 def steady_state_concentration(x, y, N, shape_mask, laplacian):
+    """
+    Calculate the steady state concentration of a diffusing substance.
+
+    Parameters:
+        x (ndarray): x-coordinates of the grid points.
+        y (ndarray): y-coordinates of the grid points.
+        N (int): Number of discretization steps.
+        shape_mask (ndarray): Boolean mask indicating the points within the shape with True and outside the shape with False.
+        laplacian (ndarray): The Laplacian matrix.
+    
+    Returns:
+        ndarray: The concentration grid.
+    """
     indices = np.arange(x.size).reshape(x.shape) # 2D indices of the full grid
     shape_indices = indices[shape_mask].flatten() # 1D indices of the shape
     n_points = len(shape_indices) # Number of points in the shape
@@ -42,7 +55,20 @@ def steady_state_concentration(x, y, N, shape_mask, laplacian):
     return concentration_grid
 
 def time_comparison_stead_state_diff(N_array, L, shape_func = generate_circle_grid, shape_str = "circle"):
-    num_tests_per_N = 25
+    """
+    Compare the time to calculate the steady state concentration using a full matrix and a sparse matrix.
+
+    Parameters:
+        N_array (ndarray): Array of grid sizes to test.
+        L (float): Size of the grid.
+        shape_func (function): Function to generate the shape mask.
+        shape_str (str): String representation of the shape.
+
+    Returns:
+        sparse_time_array (ndarray): Array of average times to calculate the concentration using a sparse matrix.
+        full_time_array (ndarray): Array of average times to calculate the concentration using a full matrix.
+    """
+    num_tests_per_N = 50
     sparse_time_array = []
     full_time_array = []
     for N in N_array:

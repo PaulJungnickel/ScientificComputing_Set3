@@ -8,7 +8,15 @@ from drum_eigenmodes import *
 
 
 def plot_laplacian(laplacian):
-    plt.imshow(laplacian)
+    """
+    Plot the Laplacian matrix.
+
+    Parameters:
+        laplacian (ndarray): The Laplacian matrix.
+    """
+    plt.imshow(laplacian, cmap= "magma")
+    plt.xticks(fontsize = 20)
+    plt.yticks(fontsize = 20)
     plt.colorbar()
     
     plt.tight_layout()
@@ -16,7 +24,11 @@ def plot_laplacian(laplacian):
     plt.show()
 
 def plot_time_comparison(sparse_time_array, full_time_array, N_array):
-    plt.figure()
+    """
+    Plot the time comparison between the sparse and full matrix calculation.
+
+    """
+    plt.figure(figsize=(8, 4))
     plt.plot(N_array, sparse_time_array, color = "blue", label = "Sparse matrix calculation", marker = "o")
     plt.plot(N_array, full_time_array, color = "red", label = "Dense matrix calculation", marker = "o")
     plt.xlabel("Different values for N")
@@ -63,6 +75,8 @@ def plot_eigenmodes(eigenvectors, eigenvalues, shape_mask, N):
 
     num_modes = min(N, sorted_eigenvectors.shape[1])
 
+    plt.figure(figsize=(8, 4))
+
     for i in range(num_modes):
         mode = np.zeros((N, N))
         mode[shape_mask] = sorted_eigenvectors[:, i]
@@ -75,6 +89,15 @@ def plot_eigenmodes(eigenvectors, eigenvalues, shape_mask, N):
         plt.show()
 
 def influence_of_L(N, L_array, shape_func = generate_circle_grid, shape_str = "circle"):
+    """
+    Plot the influence of L on the eigenfrequencies.
+
+    Parameters:
+        N (int): Number of discretization steps.
+        L_array (ndarray): Array of L values to test.
+        shape_func (function): Function to generate the shape mask.
+        shape_str (str): String representation of the shape.
+    """
     max_eigenfreq_array = []
     min_eigenfreq_array = []
     eigenfreq_boxplot = []
@@ -89,7 +112,7 @@ def influence_of_L(N, L_array, shape_func = generate_circle_grid, shape_str = "c
         eigenfreq_boxplot.append(eigenfreq)
 
     #lineplot
-    plt.figure(figsize=(10, 10))
+    plt.figure(figsize=(8, 4))
     plt.plot(L_array, min_eigenfreq_array, marker = "o", label = "Minimum eigenvalue frequency", color = "blue")
     plt.plot(L_array, max_eigenfreq_array, marker = "s", label = "Maximum eigenvalue frequency", color = "red")
     plt.legend()
@@ -102,9 +125,15 @@ def influence_of_L(N, L_array, shape_func = generate_circle_grid, shape_str = "c
     
     plt.show()
 
-
-
 def plot_concentration(concentration, in_shape, L):
+    """
+    Plot the concentration distribution.
+
+    Parameters:
+        concentration (ndarray): The concentration distribution.
+        in_shape (ndarray): A boolean mask indicating the points within the shape.
+        L (float): Size of the grid.
+    """
     N = concentration.shape[0]
     extent = [-L/2, L/2, -L/2, L/2] 
 
