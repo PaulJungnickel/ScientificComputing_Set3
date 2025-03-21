@@ -19,7 +19,7 @@ def plot_laplacian(laplacian):
     Parameters:
         laplacian (ndarray): The Laplacian matrix.
     """
-    plt.figure(figsize=(6, 4))
+    plt.figure(figsize=(4, 3))
 
     divnorm = colors.TwoSlopeNorm(vmin=-np.max(np.abs(laplacian)), vcenter=0, vmax = np.max(np.abs(laplacian)))
 
@@ -41,7 +41,7 @@ def plot_time_comparison(sparse_time_array, full_time_array, N_array):
     plt.plot(N_array, sparse_time_array, color = "blue", label = "Sparse matrix calculation", marker = "o")
     plt.plot(N_array, full_time_array, color = "red", label = "Dense matrix calculation", marker = "o")
     plt.xlabel("N")
-    plt.ylabel("Time (s))")
+    plt.ylabel("Time (s)")
     plt.yscale("log")
     plt.legend()
     plt.grid()
@@ -88,8 +88,12 @@ def plot_eigenmodes(eigenvectors, eigenvalues, shape_mask, N):
         mode = np.zeros((N, N))
         mode[shape_mask] = sorted_eigenvectors[:, i]
 
-        plt.figure(figsize=(6, 4))
-        plt.imshow(mode)
+        plt.figure(figsize=(4, 3))
+
+        divnorm = colors.TwoSlopeNorm(vmin=-np.max(np.abs(mode)), vcenter=0, vmax = np.max(np.abs(mode)))
+
+        plt.imshow(mode, cmap= "seismic", norm=divnorm)
+        #plt.imshow(mode)
         plt.colorbar()
         rounded_eigenfrequency = np.round(sorted_eigenfrequencies[i], 7)
         plt.title(f"Eigenfrequency: {rounded_eigenfrequency}")
@@ -97,6 +101,35 @@ def plot_eigenmodes(eigenvectors, eigenvalues, shape_mask, N):
         plt.tight_layout()
 
         plt.show()
+
+def plot_eigenmodes_grid(eigenvectors, eigenvalues, shape_mask, N):
+    sorted_indices = np.argsort(eigenvalues)[::-1]
+    sorted_eigenvalues = eigenvalues[sorted_indices]
+    sorted_eigenvectors = eigenvectors[:, sorted_indices]
+
+    sorted_eigenfrequencies = np.sqrt(-np.real(sorted_eigenvalues))
+
+    num_modes = min(9, sorted_eigenvectors.shape[1])  # Limit to the first 9 modes
+
+    fig, axes = plt.subplots(3, 3, figsize=(6, 5))
+    axes = axes.flatten()
+
+    for i in range(num_modes):
+        mode = np.zeros((N, N))
+        mode[shape_mask] = sorted_eigenvectors[:, i*2]
+
+        divnorm = colors.TwoSlopeNorm(vmin=-np.max(np.abs(mode)), vcenter=0, vmax=np.max(np.abs(mode)))
+
+        ax = axes[i]
+        im = ax.imshow(mode, cmap="seismic", norm=divnorm)
+        ax.set_xticks([])
+        ax.set_yticks([])
+
+    cbar_ax = fig.add_axes([0.92, 0.05, 0.02, 0.9])  # Adjust the colorbar height to match the figure
+    fig.colorbar(im, cax=cbar_ax)
+
+    plt.tight_layout(rect=[0, 0, 0.9, 1])  # Adjust the layout to make space for the colorbar
+    plt.show()
 
 def influence_of_L(N, L_array, shape_func = generate_circle_grid, shape_str = "circle"):
     
