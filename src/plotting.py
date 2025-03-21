@@ -134,14 +134,9 @@ def plot_concentration(concentration, in_shape, L):
 
     plt.figure(figsize=(4, 4))
     plt.imshow(concentration.T, cmap='hot', origin='lower', extent=extent)
-    plt.colorbar(label="Concentration")
+    cbar = plt.colorbar(label="Concentration", fraction=0.046, pad=0.04)
     
     plt.contour(in_shape.T, colors='white', linestyles='dashed', extent=extent)
     
-    # Label axes with real-world coordinates
-    #plt.xlabel("x (radius from center)")
-    #plt.ylabel("y (radius from center)")
-    #plt.title("Steady-State Concentration Distribution")
-
     plt.tight_layout()
     plt.show()
