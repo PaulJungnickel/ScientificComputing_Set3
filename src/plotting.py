@@ -11,7 +11,9 @@ from drum_eigenmodes import *
 
 
 def plot_laplacian(laplacian):
-    plt.imshow(laplacian)
+    plt.imshow(laplacian, cmap= "magma")
+    plt.xticks(fontsize = 20)
+    plt.yticks(fontsize = 20)
     plt.colorbar()
     plt.show()
 
@@ -87,7 +89,7 @@ def influence_of_L(N, L_array, shape_func = generate_circle_grid, shape_str = "c
     plt.xlabel("L values")
     plt.ylabel("Eigenfrequency")
     plt.grid()
-    plt.savefig("results/eigenfrequncies for different L values")
+    #plt.savefig("results/eigenfrequncies for different L values")
     plt.show()
 
 def time_comparison_sparse(N_array, L, shape_func = generate_circle_grid, shape_str = "circle"):
