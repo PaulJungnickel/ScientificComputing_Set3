@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+from matplotlib import colors
 import numpy as np
 import scipy
 import scipy.sparse as sp
@@ -12,25 +13,45 @@ from drum_eigenmodes import *
 
 
 def plot_laplacian(laplacian):
-    plt.imshow(laplacian, cmap= "magma")
-    plt.xticks(fontsize = 20)
-    plt.yticks(fontsize = 20)
+    """
+    Plot the Laplacian matrix.
+
+    Parameters:
+        laplacian (ndarray): The Laplacian matrix.
+    """
+    plt.figure(figsize=(6, 4))
+
+    divnorm = colors.TwoSlopeNorm(vmin=-np.max(np.abs(laplacian)), vcenter=0, vmax = np.max(np.abs(laplacian)))
+
+    plt.imshow(laplacian, cmap= "seismic", norm=divnorm)
+    plt.xticks()
+    plt.yticks()
     plt.colorbar()
+    
+    plt.tight_layout()
+    
     plt.show()
 
 def plot_time_comparison(sparse_time_array, full_time_array, N_array):
-    plt.figure()
+    """
+    Plot the time comparison between the sparse and full matrix calculation.
+
+    """
+    plt.figure(figsize=(6, 3))
     plt.plot(N_array, sparse_time_array, color = "blue", label = "Sparse matrix calculation", marker = "o")
     plt.plot(N_array, full_time_array, color = "red", label = "Dense matrix calculation", marker = "o")
-    plt.xlabel("Different values for N")
-    plt.ylabel("Time in seconds")
+    plt.xlabel("N")
+    plt.ylabel("Time (s))")
     plt.yscale("log")
     plt.legend()
     plt.grid()
+
+    plt.tight_layout()
+
     plt.show()
 
 def plot_eigenfrequencies_boxplot(N, L_range, in_shape, shape_str):
-    fig, ax = plt.subplots(figsize=(10, 5))
+    fig, ax = plt.subplots(figsize=(6, 3))
 
     all_frequencies = []
 
@@ -49,6 +70,9 @@ def plot_eigenfrequencies_boxplot(N, L_range, in_shape, shape_str):
     ax.set_xlabel("L", fontsize=16)
     ax.set_ylabel("Eigenfrequency λ", fontsize=16)
     plt.xticks(rotation=90)
+
+    plt.tight_layout()
+
     plt.show()
 
 def plot_eigenmodes(eigenvectors, eigenvalues, shape_mask, N):
@@ -58,12 +82,20 @@ def plot_eigenmodes(eigenvectors, eigenvalues, shape_mask, N):
 
     sorted_eigenfrequencies = np.sqrt(-np.real(sorted_eigenvalues))
 
-    for i in range(N):
+    num_modes = min(N, sorted_eigenvectors.shape[1])
+
+    for i in range(num_modes):
         mode = np.zeros((N, N))
         mode[shape_mask] = sorted_eigenvectors[:, i]
+
+        plt.figure(figsize=(6, 4))
         plt.imshow(mode)
         plt.colorbar()
-        plt.title(f"Eigenfrequency: {sorted_eigenfrequencies[i]}")
+        rounded_eigenfrequency = np.round(sorted_eigenfrequencies[i], 7)
+        plt.title(f"Eigenfrequency: {rounded_eigenfrequency}")
+
+        plt.tight_layout()
+
         plt.show()
 
 def influence_of_L(N, L_array, shape_func = generate_circle_grid, shape_str = "circle"):
@@ -88,24 +120,23 @@ def influence_of_L(N, L_array, shape_func = generate_circle_grid, shape_str = "c
     plt.grid()
     plt.show()
 
-def time_comparison_sparse(N_array, L, shape_func = generate_circle_grid, shape_str = "circle"):
-    sparse_time_array = []
-    full_time_array = []
-    for N in N_array:
-        laplacian_shape, in_shape, x, y = create_laplacian_shape(N, L, shape_str, shape_func)
-        sprs_laplacian = sp.csr_matrix(laplacian_shape)
-        
-        #measure time
-        start_time_1 = time.time()
-        spla.eigs(sprs_laplacian, k=22)
-        sparse_time = time.time() - start_time_1
+def plot_concentration(concentration, in_shape, L):
+    """
+    Plot the concentration distribution.
 
-        start_time_2 = time.time()
-        spla.eigs(laplacian_shape, k=22)
-        full_matrix_time = time.time() - start_time_2
+    Parameters:
+        concentration (ndarray): The concentration distribution.
+        in_shape (ndarray): A boolean mask indicating the points within the shape.
+        L (float): Size of the grid.
+    """
+    N = concentration.shape[0]
+    extent = [-L/2, L/2, -L/2, L/2] 
 
-        sparse_time_array.append(sparse_time)
-        full_time_array.append(full_matrix_time)
-
-        print(f"The time to calculate full matrix is {full_matrix_time}, the time to calculate sparse matrix is {sparse_time}")
-    return sparse_time_array, full_time_array
+    plt.figure(figsize=(4, 4))
+    plt.imshow(concentration.T, cmap='hot', origin='lower', extent=extent)
+    cbar = plt.colorbar(label="Concentration", fraction=0.046, pad=0.04)
+    
+    plt.contour(in_shape.T, colors='white', linestyles='dashed', extent=extent)
+    
+    plt.tight_layout()
+    plt.show()
