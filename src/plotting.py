@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+from matplotlib import colors
 import numpy as np
 import scipy
 
@@ -14,9 +15,13 @@ def plot_laplacian(laplacian):
     Parameters:
         laplacian (ndarray): The Laplacian matrix.
     """
-    plt.imshow(laplacian, cmap= "magma")
-    plt.xticks(fontsize = 20)
-    plt.yticks(fontsize = 20)
+    plt.figure(figsize=(6, 4))
+
+    divnorm = colors.TwoSlopeNorm(vmin=-np.max(np.abs(laplacian)), vcenter=0, vmax = np.max(np.abs(laplacian)))
+
+    plt.imshow(laplacian, cmap= "seismic", norm=divnorm)
+    plt.xticks()
+    plt.yticks()
     plt.colorbar()
     
     plt.tight_layout()
@@ -28,11 +33,11 @@ def plot_time_comparison(sparse_time_array, full_time_array, N_array):
     Plot the time comparison between the sparse and full matrix calculation.
 
     """
-    plt.figure(figsize=(8, 4))
+    plt.figure(figsize=(6, 3))
     plt.plot(N_array, sparse_time_array, color = "blue", label = "Sparse matrix calculation", marker = "o")
     plt.plot(N_array, full_time_array, color = "red", label = "Dense matrix calculation", marker = "o")
-    plt.xlabel("Different values for N")
-    plt.ylabel("Time in seconds")
+    plt.xlabel("N")
+    plt.ylabel("Time (s))")
     plt.yscale("log")
     plt.legend()
     plt.grid()
@@ -42,7 +47,7 @@ def plot_time_comparison(sparse_time_array, full_time_array, N_array):
     plt.show()
 
 def plot_eigenfrequencies_boxplot(N, L_range, in_shape, shape_str):
-    fig, ax = plt.subplots(figsize=(8, 4))
+    fig, ax = plt.subplots(figsize=(6, 3))
 
     all_frequencies = []
 
@@ -75,14 +80,15 @@ def plot_eigenmodes(eigenvectors, eigenvalues, shape_mask, N):
 
     num_modes = min(N, sorted_eigenvectors.shape[1])
 
-    plt.figure(figsize=(8, 4))
-
     for i in range(num_modes):
         mode = np.zeros((N, N))
         mode[shape_mask] = sorted_eigenvectors[:, i]
+
+        plt.figure(figsize=(6, 4))
         plt.imshow(mode)
         plt.colorbar()
-        plt.title(f"Eigenfrequency: {sorted_eigenfrequencies[i]}")
+        rounded_eigenfrequency = np.round(sorted_eigenfrequencies[i], 7)
+        plt.title(f"Eigenfrequency: {rounded_eigenfrequency}")
 
         plt.tight_layout()
 
@@ -137,7 +143,7 @@ def plot_concentration(concentration, in_shape, L):
     N = concentration.shape[0]
     extent = [-L/2, L/2, -L/2, L/2] 
 
-    plt.figure(figsize=(5, 5))
+    plt.figure(figsize=(4, 4))
     plt.imshow(concentration.T, cmap='hot', origin='lower', extent=extent)
     plt.colorbar(label="Concentration")
     
