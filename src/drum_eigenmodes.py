@@ -85,20 +85,3 @@ def time_comparison_sparse(N_array, L, shape_func = generate_circle_grid, shape_
 
         print(f"The time to calculate full matrix is {full_matrix_time}, the time to calculate sparse matrix is {sparse_time}")
     return sparse_time_array, full_time_array
-
-
-
-def eigenvalues_eigenvectors_range_of_L(N, L_array, shape_func = generate_circle_grid, shape_str = "circle", method = 'eig'):
-    """
-
-    """
-    eigenfreq_avg_array = [] 
-
-    for L in L_array:
-        laplacian_shape, in_shape, x, y = create_laplacian_shape(N, L, shape_str, shape_func)
-        eigenvalues, _ = eigenvalues_and_eigenvectors(laplacian_shape, method)
-        eigenfreq = np.sqrt(-np.real(eigenvalues))
-        avg_eigenfreq = np.median(eigenfreq)#np.mean(eigenfreq)
-        eigenfreq_avg_array.append(avg_eigenfreq)
-
-    return eigenfreq_avg_array
